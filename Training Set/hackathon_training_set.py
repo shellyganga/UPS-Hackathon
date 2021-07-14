@@ -72,6 +72,7 @@ for i in range(4):
     di['labels'] = list(totlabels)
     print(pd.unique(di['labels']))
     
+    # Removing First and Last Instances (Generally < 50)
     firsttime = di['uptimeNanos'].idxmin()
     lasttime = di['uptimeNanos'].idxmax()
     
