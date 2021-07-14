@@ -83,6 +83,4 @@ df = df.sort_values(by = 'uptimenanos_diff', ascending = True)
 #x = pd.unique(di['uptimesecond_diff'])
 print(pd.unique(df['labels']))
 
-df = df.replace([-111.0],np.nan)
-
-df.to_csv(odir + 'trainingset_labeled.csv', index = True, na_rep = np.nan)
+df.to_csv(odir + 'trainingset_labeled.csv', index = True)
