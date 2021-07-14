@@ -24,6 +24,7 @@ di21_gt = pd.read_csv(ddir + '21/groundTruth.csv')
 
 dis = [di16,di17,di20,di21]
 dis_label = [di16_gt, di17_gt, di20_gt, di21_gt]
+df = pd.DataFrame()
 for i in range(4):
     di = dis[i]
     dil = dis_label[i]
@@ -88,10 +89,13 @@ for i in range(4):
     
     days_check = di.groupby('ts').size()
     print(pd.unique(days_check))
-        
-df = pd.concat(dis)
+    
+    df = df.append(di)
 
-df = df.drop(columns = ['uptimenanos_diff','uptimesecond_diff','timestamp'])
+print(len(pd.unique(df['ts'])))
+df.index = df['ts']
+
+df = df.drop(columns = ['uptimenanos_diff','uptimesecond_diff','ts'])
 
 df['uptimenanos_diff'] = df['uptimeNanos'] - np.full((df.shape[0],),df['uptimeNanos'].min())
 df['uptimesecond_diff'] = round(df['uptimenanos_diff']*1e-9,1)
@@ -99,5 +103,7 @@ df = df.sort_values(by = 'uptimenanos_diff', ascending = True)
 
 #x = pd.unique(di['uptimesecond_diff'])
 print(pd.unique(df['labels']))
+
+print(len(list(pd.unique(df['uptimeNanos']))) == df.shape[0])
 
 df.to_csv(odir + 'trainingset_labeled.csv', index = True)
