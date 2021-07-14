@@ -71,6 +71,22 @@ for i in range(4):
     
     di['labels'] = list(totlabels)
     print(pd.unique(di['labels']))
+    
+    firsttime = di['uptimeNanos'].idxmin()
+    lasttime = di['uptimeNanos'].idxmax()
+    
+    di = di[(di['timestamp'] != firsttime) & (di['timestamp'] != lasttime)]
+    
+    # Counting Number of Entries in Days
+    di = di.rename({'timestamp':'ts'}, axis = 1)
+    days = di.groupby('ts').size()
+    print(pd.unique(days))
+    
+    di['rownumber'] = di.groupby(['ts']).cumcount()+1
+    di = di[di['rownumber'] <= 50]
+    
+    days_check = di.groupby('ts').size()
+    print(pd.unique(days_check))
         
 df = pd.concat(dis)
 
