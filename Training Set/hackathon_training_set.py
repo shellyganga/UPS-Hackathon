@@ -10,6 +10,7 @@ event_dict = {'evento_nao_agressivo':0, 'curva_direita_agressiva':1,'curva_esque
               'aceleracao_agressiva':5,'freada_agressiva':6}
 
 ddir = 'C:/users/spwiz/Downloads/driverBehaviorDataset-master/driverBehaviorDataset-master/data/'
+odir = 'C:/users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/Training Set/'
 
 di16 = pd.read_csv(ddir + '16/acelerometro_terra.csv')
 di17 = pd.read_csv(ddir + '17/acelerometro_terra.csv')
@@ -56,14 +57,15 @@ for i in range(4):
         start, end = row[' inicio'], row[' fim']
         
         colname = 'col' + str(i)
-        dilabel[colname] = np.where((di['uptimesecond_diff'] >= start) & (di['uptimesecond_diff'] <= end), row[0], 0)
+        dilabel[colname] = np.where((di['uptimesecond_diff'] >= start) & (di['uptimesecond_diff'] <= end), row[0], np.nan)
         
         print(pd.unique(dilabel[colname]))
         
         i += 1
     
+    
     print(dilabel.shape[1] == dil.shape[0])
-    totlabels = dilabel.sum(axis = 1, skipna = False)
+    totlabels = dilabel.loc[:,list(dilabel.columns)].sum(axis=1, min_count=1)
     totlabels.name = 'labels'
     print(pd.unique(totlabels))
     
@@ -80,3 +82,5 @@ df = df.sort_values(by = 'uptimenanos_diff', ascending = True)
 
 #x = pd.unique(di['uptimesecond_diff'])
 print(pd.unique(df['labels']))
+
+df.to_csv(odir + 'trainingset_labeled.csv', index = True)
