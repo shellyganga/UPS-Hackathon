@@ -9,6 +9,16 @@ def home():
     # else:
     #     return render_template('login.html')
 
+@app.route('/driver_2', methods=["GET"])
+def driver_2():
+    return render_template('driver_2.html')
+    # if "username" in session:
+    #     return render_template('index.html')
+    # else:
+    #     return render_template('login.html')
+
+
+
 # Register new user
 # @app.route('/register', methods=["GET", "POST"])
 # def register():
