@@ -4,7 +4,7 @@ from scipy import stats
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 
-from keras.preprocessing.sequence import TimeseriesGenerator
+#from keras.preprocessing.sequence import TimeseriesGenerator
 import keras
 
 ddir = 'C:/users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/Training Set/'
