@@ -26,7 +26,7 @@ ts_generator = TimeseriesGenerator(features, targets, length=1, sampling_rate = 
 print(ts_generator[0])
 '''
 
-di = di.head(n = 20)
+#di = di.head(n = 20)
 
 def create_dataset(X, y, time_steps, step):
     Xs, ys = [], []
