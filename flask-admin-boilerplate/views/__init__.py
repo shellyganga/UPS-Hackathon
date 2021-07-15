@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session,jsonify
+from flask import json, render_template, request, redirect, url_for, session,jsonify
 from app import app
 import numpy as np
 import pickle
@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 import xgboost as xgb
 
 #Load CSV File
-csvFile =  pd.read_csv('C:/Users/Ram Vyas/OneDrive/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/trainingset_labeled.csv')
+csvFile = pd.read_csv('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/trainingset_labeled.csv')
 
 # Data Processing
 disub = csvFile[['x','y','z','labels']]
@@ -21,17 +21,17 @@ y_train = X_train.pop('labels')
 
 X_test = test.copy()
 y_test = X_test.pop('labels')
-#Load Pickled Model
-
-model = pickle.load(open('C:/Users/Ram Vyas/OneDrive/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
-
-# Evaluation
-y_pred = model.predict(X_test)
-print(pd.unique(y_pred))
 
 @app.route('/', methods=["GET"])
 def home():
 
+#Load Pickled Model
+
+    model = pickle.load(open('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
+
+# Evaluation
+    y_pred = model.predict(X_test)
+    test = pd.unique(y_pred)
     return render_template('index.html')
     # if "username" in session:
     #     return render_template('index.html')
@@ -40,12 +40,29 @@ def home():
 
 @app.route('/driver_2', methods=["GET"])
 def driver_2():
+
+    model = pickle.load(open('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
+
+# Evaluation
+    y_pred = model.predict(X_test)
+    test = pd.unique(y_pred)
     return render_template('driver_2.html')
     # if "username" in session:
     #     return render_template('index.html')
     # else:
     #     return render_template('login.html')
 
+@app.route('/api', methods=["GET", "POST"])
+def api():
+
+
+    model = pickle.load(open('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
+
+# Evaluation
+    y_pred = model.predict(X_test)
+    test = pd.unique(y_pred)
+    message = {'info': int(test[0])}
+    return jsonify(message)
 
 
 # Register new user
