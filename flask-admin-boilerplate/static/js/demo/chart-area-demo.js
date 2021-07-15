@@ -32,25 +32,21 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 const testing = async function () {
   const test = await fetch("/api");
   const response = await test.json();
+  const arr = [];
+  const arr2 = [];
+  for (let i = 1; i <= 1000; i++) {
+    arr.push(i);
+  }
+
+  for (let i = 1; i <= 1000; i++) {
+    arr2.push(Math.random());
+  }
 
   var ctx = document.getElementById("myAreaChart");
   var myLineChart = new Chart(ctx, {
     type: "line",
     data: {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      labels: arr,
       datasets: [
         {
           label: "Earnings",
@@ -65,7 +61,7 @@ const testing = async function () {
           pointHoverBorderColor: "rgba(78, 115, 223, 1)",
           pointHitRadius: 10,
           pointBorderWidth: 2,
-          data: [response.info],
+          data: arr2,
         },
       ],
     },
