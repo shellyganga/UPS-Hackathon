@@ -6,8 +6,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import xgboost as xgb
 
+import pathlib
+path = pathlib.Path(__file__).parent.resolve()
+
+
 #Load CSV File
-csvFile = pd.read_csv('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/trainingset_labeled.csv')
+csvFile = pd.read_csv(path/'trainingset_labeled.csv')
 
 # Data Processing
 disub = csvFile[['x','y','z','labels']]
@@ -27,7 +31,7 @@ def home():
 
 #Load Pickled Model
 
-    model = pickle.load(open('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
+    model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
 # Evaluation
     y_pred = model.predict(X_test)
@@ -41,7 +45,7 @@ def home():
 @app.route('/driver_2', methods=["GET"])
 def driver_2():
 
-    model = pickle.load(open('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
+    model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
 # Evaluation
     y_pred = model.predict(X_test)
@@ -56,7 +60,7 @@ def driver_2():
 def api():
 
 
-    model = pickle.load(open('/Users/auddin431/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
+    model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
 # Evaluation
     y_pred = model.predict(X_test)
