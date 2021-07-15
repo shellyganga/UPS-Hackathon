@@ -38,7 +38,7 @@ const testing = async function () {
     type: "line",
     data: {
       labels: [
-        "Jan",
+        "0",
         "Feb",
         "Mar",
         "Apr",
@@ -49,7 +49,7 @@ const testing = async function () {
         "Sep",
         "Oct",
         "Nov",
-        "Dec",
+        "20",
       ],
       datasets: [
         {
