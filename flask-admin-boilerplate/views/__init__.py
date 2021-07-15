@@ -1,8 +1,37 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session,jsonify
 from app import app
+import numpy as np
+import pickle
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
+
+#Load CSV File
+csvFile =  pd.read_csv('C:/Users/Ram Vyas/OneDrive/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/trainingset_labeled.csv')
+
+# Data Processing
+disub = csvFile[['x','y','z','labels']]
+disub = disub.replace([2.,3.,4.,5.,6.,7.], 1.)
+
+# Train Test Split
+train, test = train_test_split(disub, test_size=0.2, random_state=42, shuffle=True)
+
+X_train = train.copy()
+y_train = X_train.pop('labels')
+
+X_test = test.copy()
+y_test = X_test.pop('labels')
+#Load Pickled Model
+
+model = pickle.load(open('C:/Users/Ram Vyas/OneDrive/Desktop/UPS-Hackathon-Resources/flask-admin-boilerplate/views/thepickledmodel.pkl','rb'))
+
+# Evaluation
+y_pred = model.predict(X_test)
+print(pd.unique(y_pred))
 
 @app.route('/', methods=["GET"])
 def home():
+
     return render_template('index.html')
     # if "username" in session:
     #     return render_template('index.html')
