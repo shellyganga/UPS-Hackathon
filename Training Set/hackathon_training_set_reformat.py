@@ -10,9 +10,7 @@ import keras
 ddir = 'C:/users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/Training Set/'
 
 di = pd.read_csv(ddir + 'trainingset_labeled.csv')
-di['uptimemilli_diff'] = (di['uptimeNanos'] - np.full((di.shape[0],),di['uptimeNanos'].min()))*1e-6
 
-di['labels'] = di['labels'].fillna(7.)
 
 '''
 # One-Hot Encoding
