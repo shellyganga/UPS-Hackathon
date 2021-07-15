@@ -4,27 +4,60 @@ import numpy as np
 import pickle
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import xgboost as xgb
-
+import tensorflow as tf
+from tensorflow import keras
 import pathlib
 path = pathlib.Path(__file__).parent.resolve()
 
 
-#Load CSV File
-csvFile = pd.read_csv(path/'trainingset_labeled.csv')
+di = pd.read_csv(path/'test_fordemo.csv')
+model = keras.models.load_model(path/"my_model_fordemo")
 
-# Data Processing
-disub = csvFile[['x','y','z','labels']]
-disub = disub.replace([2.,3.,4.,5.,6.,7.], 1.)
+event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
+event_list = ['Non-aggressive Event','Aggressive Right Turn','Aggressive Left Turn','Aggressive Right Lane Change','Aggressive Left Lane Change','Aggressive Acceleration','Aggressive Braking']
 
-# Train Test Split
-train, test = train_test_split(disub, test_size=0.2, random_state=42, shuffle=True)
+def demo_data(X, time_steps, step, model):
+    XX = X[['x','y','z']]
 
-X_train = train.copy()
-y_train = X_train.pop('labels')
+    Xs = []
+    for i in range(0, len(XX) - time_steps, step):
+        v = XX.iloc[i:(i + time_steps)].values
+        Xs.append(v)
+    Xs = np.array(Xs)
 
-X_test = test.copy()
-y_test = X_test.pop('labels')
+    prediction = model.predict(Xs)
+
+    t_inseconds = time_steps * (1/50)
+
+    timestamps = np.arange(0,t_inseconds*prediction.shape[0],t_inseconds)
+
+    prediction_oh = pd.get_dummies(prediction)
+    prediction_oh = prediction_oh.rename(columns = event_dict)
+
+    demo_df = pd.DataFrame(np.nan, index = [i for i in range(0,prediction.shape[0])], columns = event_list)
+    print(demo_df)
+
+    for c in prediction_oh.columns:
+        demo_df[c] = prediction_oh[c]
+
+    demo_df = demo_df.fillna(0)
+
+    demo_df['timestamp'] = timestamps
+
+    return demo_df
+
+# Create Dataset #Later will change
+TIME_STEPS = 10
+STEP = 5
+
+demo_df  = demo_data(
+    di[['x', 'y', 'z']],
+    TIME_STEPS,
+    STEP,
+    model
+)
+
+print(demo_df)
 
 @app.route('/', methods=["GET"])
 def home():
@@ -37,10 +70,6 @@ def home():
     y_pred = model.predict(X_test)
     test = pd.unique(y_pred)
     return render_template('index.html')
-    # if "username" in session:
-    #     return render_template('index.html')
-    # else:
-    #     return render_template('login.html')
 
 @app.route('/driver_2', methods=["GET"])
 def driver_2():
@@ -51,10 +80,6 @@ def driver_2():
     y_pred = model.predict(X_test)
     test = pd.unique(y_pred)
     return render_template('driver_2.html')
-    # if "username" in session:
-    #     return render_template('index.html')
-    # else:
-    #     return render_template('login.html')
 
 @app.route('/api', methods=["GET", "POST"])
 def api():
@@ -68,49 +93,6 @@ def api():
     message = {'info': int(test[0])}
     return jsonify(message)
 
-
-# Register new user
-# @app.route('/register', methods=["GET", "POST"])
-# def register():
-#     if request.method == "GET":
-#         return render_template("register.html")
-#     elif request.method == "POST":
-#         registerUser()
-#         return redirect(url_for("login"))
-
-#Check if email already exists in the registratiion page
-# @app.route('/checkusername', methods=["POST"])
-# def check():
-#     return checkusername()
-
-# Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
-# @app.route('/login', methods=["GET"])
-# def login():
-#     if request.method == "GET":
-#         if "username" not in session:
-#             return render_template("login.html")
-#         else:
-#             return redirect(url_for("home"))
-
-
-# @app.route('/checkloginusername', methods=["POST"])
-# def checkUserlogin():
-#     return checkloginusername()
-
-# @app.route('/checkloginpassword', methods=["POST"])
-# def checkUserpassword():
-#     return checkloginpassword()
-
-#The admin logout
-# @app.route('/logout', methods=["GET"])  # URL for logout
-# def logout():  # logout function
-#     session.pop('username', None)  # remove user session
-#     return redirect(url_for("home"))  # redirect to home page with message
-
-#Forgot Password
-# @app.route('/forgot-password', methods=["GET"])
-# def forgotpassword():
-#     return render_template('forgot-password.html')
 
 #404 Page
 @app.route('/404', methods=["GET"])
