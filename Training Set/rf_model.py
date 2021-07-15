@@ -43,7 +43,7 @@ rf = RandomForestClassifier()
 grid_search = GridSearchCV(estimator = rf, param_grid = param_grid, 
                           cv = 3, n_jobs = -1, verbose = 2)
 
-grid_search.fit(X_train, y_train)
+grid_search.fit(X_train, train_labels)
 
 classifier = RandomForestClassifier(**grid_search.best_params_)
 classifier.fit(X_train, y_train)
