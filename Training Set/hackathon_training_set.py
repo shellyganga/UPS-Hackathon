@@ -106,4 +106,9 @@ print(pd.unique(df['labels']))
 
 print(len(list(pd.unique(df['uptimeNanos']))) == df.shape[0])
 
+df['uptimemilli_diff'] = (df['uptimeNanos'] - np.full((df.shape[0],),df['uptimeNanos'].min()))*1e-6
+
+df['labels'] = df['labels'].fillna(7.)
+print(pd.unique(df['labels']))
+
 df.to_csv(odir + 'trainingset_labeled.csv', index = True)
