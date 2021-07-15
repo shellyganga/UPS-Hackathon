@@ -81,4 +81,4 @@ model.evaluate(X_test, y_test)
 y_pred = model.predict(X_test)
 
 # Saving Model
-model.save('C:/Users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/For Demo/my_model_fordemo')
+tf.keras.models.save_model(model, 'C:/Users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/For Demo/my_model_fordemo')
