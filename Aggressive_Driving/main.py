@@ -9,14 +9,27 @@ import numpy as np
 from scipy import stats
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
-
+import tensorflow as tf
 #from keras.preprocessing.sequence import TimeseriesGenerator
 import keras
 
 di = pd.read_csv('https://raw.githubusercontent.com/shellyganga/UPS-Hackathon-Resources/main/Training%20Set/trainingset_labeled.csv?token=AHT6SSDYAEP53ZDJSWO467DA7CWLE')
-#di['uptimemilli_diff'] = (di['uptimeNanos'] - np.full((di.shape[0],),di['uptimeNanos'].min()))*1e-6
-train, test = train_test_split(di, test_size=0.3, random_state=42, shuffle=True)
+di = di[di['labels'] != 7]
 
+#di['uptimemilli_diff'] = (di['uptimeNanos'] - np.full((di.shape[0],),di['uptimeNanos'].min()))*1e-6
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+train, test = train_test_split(di, test_size=0.2, random_state=42, shuffle=True)
+sns.countplot(x = 'labels',
+              data = train,
+              order = df.labels.value_counts().index);
+plt.show()
+sns.countplot(x = 'labels',
+              data = test,
+              order = df.labels.value_counts().index);
+plt.show()
 di['labels'] = di['labels'].fillna(7.)
 
 '''
@@ -41,8 +54,8 @@ def create_dataset(X, y, time_steps, step):
     return np.array(Xs), np.array(ys).reshape(-1, 1)
 
 # Create Dataset
-TIME_STEPS = 3068
-STEP = 50
+TIME_STEPS = 100
+STEP = 1
 
 X_train, y_train = create_dataset(
     train[['x', 'y', 'z']],
@@ -83,22 +96,51 @@ model.add(keras.layers.Dense(units=128, activation='relu'))
 model.add(keras.layers.Dense(y_train.shape[1], activation='softmax'))
 
 model.compile(
-  loss='categorical_crossentropy',
+  loss='mse',
   optimizer='adam',
-  metrics=['acc']
+  metrics=['acc', tf.keras.metrics.MeanSquaredError()]
 )
 
 history = model.fit(
     X_train, y_train,
-    epochs=20,
-    batch_size=32,
-    validation_split=0.1,
+    epochs=1,
+    batch_size=16,
+    validation_split=0.2,
     shuffle=False
 )
 
 model.evaluate(X_test, y_test)
 y_pred = model.predict(X_test)
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
+import matplotlib.pyplot as plt
+def plot_cm(y_true, y_pred, class_names):
+  cm = confusion_matrix(y_true, y_pred)
+  fig, ax = plt.subplots(figsize=(18, 16))
+  ax = sns.heatmap(
+      cm,
+      annot=True,
+      fmt="d",
+      cmap=sns.diverging_palette(220, 20, n=7),
+      ax=ax
+  )
+
+  plt.ylabel('Actual')
+  plt.xlabel('Predicted')
+  ax.set_xticklabels(class_names)
+  ax.set_yticklabels(class_names)
+  b, t = plt.ylim() # discover the values for bottom and top
+  b += 0.5 # Add 0.5 to the bottom
+  t -= 0.5 # Subtract 0.5 from the top
+  plt.ylim(b, t) # update the ylim(bottom, top) values
+  plt.show() # ta-da!
+plot_cm(
+  enc.inverse_transform(y_test),
+  enc.inverse_transform(y_pred),
+  enc.categories_[0]
+)
+model.save('/Users/shellyschwartz/PycharmProjects/upsHackathon/UPS-Hackathon-Resources/Aggressive_Driving/my_model2')
 # df = pd.read_csv('https://raw.githubusercontent.com/jair-jr/driverBehaviorDataset/master/data/16/acelerometro_terra.csv')
 # print(df.head())
 # df = df[21:]
