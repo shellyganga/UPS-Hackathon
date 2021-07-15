@@ -12,6 +12,10 @@ def demo_data(X, time_steps, step, model):
         
     # model predict with Xs
     
+    t_inseconds = time_steps * (1/50)
+    
+    
+    
     return x_out
 
 
