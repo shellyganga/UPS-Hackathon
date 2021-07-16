@@ -82,8 +82,8 @@ const testing = async function () {
     AggressiveBraking.push(value);
   }
 
-  var ctx = document.getElementById("myAreaChart");
-  var myLineChart = new Chart(ctx, {
+  var nonAggressive = document.getElementById("nonAggressive");
+  var myLineChartNonAg = new Chart(nonAggressive, {
     type: "line",
     data: {
       labels: timestamps,
@@ -103,6 +103,86 @@ const testing = async function () {
           pointBorderWidth: 2,
           data: NonAggressive,
         },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return value;
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": " + tooltipItem.yLabel;
+          },
+        },
+      },
+    },
+  });
+  var agRight = document.getElementById("agRight");
+  var myLineChartAgRight = new Chart(agRight, {
+    type: "line",
+    data: {
+      labels: timestamps,
+      datasets: [
         {
           label: "Aggressive Right Turn",
           lineTension: 0.3,
@@ -118,21 +198,181 @@ const testing = async function () {
           pointBorderWidth: 2,
           data: AggressiveRightTurn,
         },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return value;
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": " + tooltipItem.yLabel;
+          },
+        },
+      },
+    },
+  });
+  var agLeft = document.getElementById("agLeft");
+  var myLineChartAgLeft = new Chart(agLeft, {
+    type: "line",
+    data: {
+      labels: timestamps,
+      datasets: [
         {
-          label: "Aggressive Left Turn",
+          label: "Aggressive Left",
           lineTension: 0.3,
           backgroundColor: "rgba(78, 115, 223, 0.05)",
-          borderColor: "rgba(255, 99, 71, 1)",
+          borderColor: "rgba(8, 54, 42, 1)",
           pointRadius: 3,
-          pointBackgroundColor: "rgba(255, 99, 71, 1)",
-          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointBackgroundColor: "rgba(8, 54, 42, 1)",
+          pointBorderColor: "rgba(8, 54, 42, 1)",
           pointHoverRadius: 3,
-          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
-          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverBackgroundColor: "rgba(8, 54, 42, 1)",
+          pointHoverBorderColor: "rgba(8, 54, 42, 1)",
           pointHitRadius: 10,
           pointBorderWidth: 2,
           data: AggressiveLeftTurn,
         },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return value;
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": " + tooltipItem.yLabel;
+          },
+        },
+      },
+    },
+  });
+  var agRightLaneChange = document.getElementById("agRightLaneChange");
+  var myLineChart = new Chart(agRightLaneChange, {
+    type: "line",
+    data: {
+      labels: timestamps,
+      datasets: [
         {
           label: "Aggressive Right Lane Change",
           lineTension: 0.3,
@@ -148,6 +388,86 @@ const testing = async function () {
           pointBorderWidth: 2,
           data: AggressiveRightLaneChange,
         },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return value;
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": " + tooltipItem.yLabel;
+          },
+        },
+      },
+    },
+  });
+  var agLeftLaneChange = document.getElementById("agLeftLaneChange");
+  var myLineChart = new Chart(agLeftLaneChange, {
+    type: "line",
+    data: {
+      labels: timestamps,
+      datasets: [
         {
           label: "Aggressive Left Lane Change",
           lineTension: 0.3,
@@ -163,6 +483,86 @@ const testing = async function () {
           pointBorderWidth: 2,
           data: AggressiveLeftLaneChange,
         },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return value;
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": " + tooltipItem.yLabel;
+          },
+        },
+      },
+    },
+  });
+  var agAccel = document.getElementById("agAccel");
+  var myLineChart = new Chart(agAccel, {
+    type: "line",
+    data: {
+      labels: timestamps,
+      datasets: [
         {
           label: "Aggressive Acceleration",
           lineTension: 0.3,
@@ -178,6 +578,86 @@ const testing = async function () {
           pointBorderWidth: 2,
           data: AggressiveAcceleration,
         },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return value;
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": " + tooltipItem.yLabel;
+          },
+        },
+      },
+    },
+  });
+  var agBrake = document.getElementById("agBrake");
+  var myLineChart = new Chart(agBrake, {
+    type: "line",
+    data: {
+      labels: timestamps,
+      datasets: [
         {
           label: "Aggressive Braking",
           lineTension: 0.3,
