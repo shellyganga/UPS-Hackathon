@@ -12,10 +12,10 @@ event_dict = {'evento_nao_agressivo':0, 'curva_direita_agressiva':1,'curva_esque
 ddir = 'C:/users/spwiz/Downloads/driverBehaviorDataset-master/driverBehaviorDataset-master/data/'
 odir = 'C:/users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/Training Set/'
 
-di16 = pd.read_csv(ddir + '16/acelerometro_terra.csv')
-di17 = pd.read_csv(ddir + '17/acelerometro_terra.csv')
-di20 = pd.read_csv(ddir + '20/acelerometro_terra.csv')
-di21 = pd.read_csv(ddir + '21/acelerometro_terra.csv')
+di16 = pd.read_csv(ddir + '16combined.csv')
+di17 = pd.read_csv(ddir + '17combined.csv')
+di20 = pd.read_csv(ddir + '20combined.csv')
+di21 = pd.read_csv(ddir + '21combined.csv')
 
 di16_gt = pd.read_csv(ddir + '16/groundTruth.csv')
 di17_gt = pd.read_csv(ddir + '17/groundTruth.csv')
@@ -111,4 +111,4 @@ df['uptimemilli_diff'] = (df['uptimeNanos'] - np.full((df.shape[0],),df['uptimeN
 df['labels'] = df['labels'].fillna(7.)
 print(pd.unique(df['labels']))
 
-df.to_csv(odir + 'trainingset_labeled.csv', index = True)
+df.to_csv(odir + 'trainingset_labeled_combined.csv', index = True)
