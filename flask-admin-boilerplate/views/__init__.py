@@ -14,7 +14,8 @@ path = pathlib.Path(__file__).parent.resolve()
 
 di = pd.read_csv(path/'test_fordemo.csv')
 csv_read = pd.read_csv(path/'demo_df_artificial.csv')
-model = keras.models.load_model(path/"my_model_fordemo")
+model = keras.models.load_model(path/"model_basic_version.h5")
+print("I am here")
 
 event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
 event_list = ['Non-aggressive Event','Aggressive Right Turn','Aggressive Left Turn','Aggressive Right Lane Change','Aggressive Left Lane Change','Aggressive Acceleration','Aggressive Braking']
@@ -30,7 +31,9 @@ def demo_data(X, time_steps, step, model):
         Xs.append(v)
     Xs = np.array(Xs)
 
+    print(f"{Xs.shape = }")
     prediction = model.predict_classes(Xs)
+    
 
     t_inseconds = time_steps * (1/50)
 
@@ -52,7 +55,7 @@ def demo_data(X, time_steps, step, model):
     return demo_df
 
 # Create Dataset #Later will change
-TIME_STEPS = 10
+TIME_STEPS = 200
 STEP = 5
 
 demo_df  = demo_data(
