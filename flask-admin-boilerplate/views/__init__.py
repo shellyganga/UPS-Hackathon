@@ -65,6 +65,7 @@ demo_df  = demo_data(
 )
 
 print(demo_df)
+duration = demo_df["timestamp"][len(demo_df)-1] // 60
 jsonOb = demo_df.to_json(path_or_buf=None, orient=None, 
 date_format=None, double_precision=10, 
 force_ascii=True, 
@@ -109,7 +110,8 @@ def home():
         aggRightLane=finalRet["Aggressive Right Lane Change"],
         aggLeftLane=finalRet["Aggressive Left Lane Change"],
         aggAccel=finalRet["Aggressive Acceleration"],
-        aggBrake=finalRet["Aggressive Braking"]
+        aggBrake=finalRet["Aggressive Braking"],
+        duration=duration
     )
 
 
