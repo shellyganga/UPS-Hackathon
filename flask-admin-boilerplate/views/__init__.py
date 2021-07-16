@@ -7,6 +7,8 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from tensorflow import keras
 import pathlib
+import json
+
 path = pathlib.Path(__file__).parent.resolve()
 
 
@@ -16,9 +18,11 @@ model = keras.models.load_model(path/"my_model_fordemo")
 
 event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
 event_list = ['Non-aggressive Event','Aggressive Right Turn','Aggressive Left Turn','Aggressive Right Lane Change','Aggressive Left Lane Change','Aggressive Acceleration','Aggressive Braking']
+cols = ['x','y','z']
+#cols = ['accel_x','accel_y','accel_z','linaccel_x','linaccel_y','linaccel_z','gyro_x','gyro_y','gyro_z']
 
 def demo_data(X, time_steps, step, model):
-    XX = X[['x','y','z']]
+    XX = X[cols]
 
     Xs = []
     for i in range(0, len(XX) - time_steps, step):
@@ -36,7 +40,7 @@ def demo_data(X, time_steps, step, model):
     prediction_oh = prediction_oh.rename(columns = event_dict)
 
     demo_df = pd.DataFrame(np.nan, index = [i for i in range(0,prediction.shape[0])], columns = event_list)
-    print(demo_df)
+    #print(demo_df)
 
     for c in prediction_oh.columns:
         demo_df[c] = prediction_oh[c]
@@ -52,7 +56,7 @@ TIME_STEPS = 10
 STEP = 5
 
 demo_df  = demo_data(
-    di[['x', 'y', 'z']],
+    di[cols],
     TIME_STEPS,
     STEP,
     model
@@ -73,7 +77,7 @@ default_handler=None, lines=False,
 compression='infer', index=True)
 
 
-print(jsonOb)
+#print(jsonOb)
 @app.route('/', methods=["GET"])
 def home():
 
@@ -84,7 +88,26 @@ def home():
 # # Evaluation
 #     y_pred = model.predict(X_test)
 #     test = pd.unique(y_pred)
-    return render_template('index.html')
+    df_freq = csv_read.apply(lambda x: round(sum(x)/csv_read.shape[0] * 100 ,1))
+    df_freq = df_freq.drop('timestamp')
+
+    jsonFreqOb = df_freq.to_json(path_or_buf=None, orient=None, 
+        date_format=None, double_precision=10, 
+        force_ascii=True, 
+        date_unit='ms', 
+        default_handler=None, lines=False, 
+        compression='infer', index=True)
+    finalRet = json.loads(jsonFreqOb)
+    return render_template('index.html',
+        nonAggresive=finalRet["Non-aggressive Event"],
+        aggRightTurn=finalRet["Aggressive Right Turn"],
+        aggLeftTurn=finalRet["Aggressive Left Turn"],
+        aggRightLane=finalRet["Aggressive Right Lane Change"],
+        aggLeftLane=finalRet["Aggressive Left Lane Change"],
+        aggAccel=finalRet["Aggressive Acceleration"],
+        aggBrake=finalRet["Aggressive Braking"]
+    )
+
 
 @app.route('/driver_2', methods=["GET"])
 def driver_2():
@@ -108,17 +131,7 @@ def api():
 
 @app.route('/freqapi',methods=["GET","POST"])
 def freqapi():
-    df_freq = demo_df.apply(lambda x: round(sum(x)/di.shape[0] * 100 ,1))
-    df_freq = df_freq.drop('timestamp')
-
-    jsonFreqOb = df_freq.to_json(path_or_buf=None, orient=None, 
-        date_format=None, double_precision=10, 
-        force_ascii=True, 
-        date_unit='ms', 
-        default_handler=None, lines=False, 
-        compression='infer', index=True)
-    return jsonFreqOb
-
+    return render_template('index.html')
 #404 Page
 @app.route('/404', methods=["GET"])
 def errorpage():
