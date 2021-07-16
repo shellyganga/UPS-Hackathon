@@ -11,6 +11,9 @@ model = keras.models.load_model("/Users/spwiz/Documents/GitHub/UPS-Hackathon-Res
 event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
 event_list = ['Non-aggressive Event','Aggressive Right Turn','Aggressive Left Turn','Aggressive Right Lane Change','Aggressive Left Lane Change','Aggressive Acceleration','Aggressive Braking']
 
+#cols = ['x','y','z']
+cols = ['accel_x','accel_y','accel_z','linaccel_x','linaccel_y','linaccel_z','gyro_x','gyro_y','gyro_z']
+
 def demo_data(X, time_steps, step, model):
     XX = X[['x','y','z']]
 
@@ -63,7 +66,7 @@ for d in drivers:
 '''
 
 demo_df  = demo_data(
-    di[['x', 'y', 'z']],
+    di[cols],
     TIME_STEPS,
     STEP,
     model
