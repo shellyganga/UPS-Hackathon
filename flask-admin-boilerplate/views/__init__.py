@@ -12,15 +12,15 @@ import json
 path = pathlib.Path(__file__).parent.resolve()
 
 
-di = pd.read_csv(path/'test_fordemo.csv')
+di = pd.read_csv(path/'demo_df_combined.csv')
 csv_read = pd.read_csv(path/'demo_df_artificial.csv')
 model = keras.models.load_model(path/"model_basic_version.h5")
 print("I am here")
 
 event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
 event_list = ['Non-aggressive Event','Aggressive Right Turn','Aggressive Left Turn','Aggressive Right Lane Change','Aggressive Left Lane Change','Aggressive Acceleration','Aggressive Braking']
-cols = ['x','y','z']
-#cols = ['accel_x','accel_y','accel_z','linaccel_x','linaccel_y','linaccel_z','gyro_x','gyro_y','gyro_z']
+#cols = ['x','y','z']
+cols = ['accel_x','accel_y','accel_z','linaccel_x','linaccel_y','linaccel_z','gyro_x','gyro_y','gyro_z']
 
 def demo_data(X, time_steps, step, model):
     XX = X[cols]
@@ -33,7 +33,6 @@ def demo_data(X, time_steps, step, model):
 
     print(f"{Xs.shape = }")
     prediction = model.predict_classes(Xs)
-    
 
     t_inseconds = time_steps * (1/50)
 
@@ -64,6 +63,8 @@ demo_df  = demo_data(
     STEP,
     model
 )
+
+print(demo_df)
 jsonOb = demo_df.to_json(path_or_buf=None, orient=None, 
 date_format=None, double_precision=10, 
 force_ascii=True, 
@@ -91,7 +92,7 @@ def home():
 # # Evaluation
 #     y_pred = model.predict(X_test)
 #     test = pd.unique(y_pred)
-    df_freq = csv_read.apply(lambda x: round(sum(x)/csv_read.shape[0] * 100 ,1))
+    df_freq = demo_df.apply(lambda x: round(sum(x)/demo_df.shape[0] * 100 ,1))
     df_freq = df_freq.drop('timestamp')
 
     jsonFreqOb = df_freq.to_json(path_or_buf=None, orient=None, 
@@ -130,11 +131,11 @@ def api():
 #     y_pred = model.predict(X_test)
 #     test = pd.unique(y_pred)
 #     message = {'info': int(test[0])}
-    return jsonOb1
+    return jsonOb
 
 @app.route('/freqapi',methods=["GET","POST"])
 def freqapi():
-    return render_template('index.html')
+    return jsonOb
 #404 Page
 @app.route('/404', methods=["GET"])
 def errorpage():
