@@ -1,4 +1,4 @@
-,Non-aggressive Event,Aggressive Right Turn,Aggressive Left Turn,Aggressive Right Lane Change,Aggressive Left Lane Change,Aggressive Acceleration,Aggressive Braking,timestamp
+Non-aggressive Event,Aggressive Right Turn,Aggressive Left Turn,Aggressive Right Lane Change,Aggressive Left Lane Change,Aggressive Acceleration,Aggressive Braking,timestamp
 0,1,0,0,0,0,0,0,0
 1,1,0,0,0,0,0,0,0.2
 2,1,0,0,0,0,0,0,0.4
