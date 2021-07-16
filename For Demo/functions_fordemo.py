@@ -72,7 +72,7 @@ demo_df  = demo_data(
     model
 )
 
-df_freq = demo_df.apply(lambda x: round(sum(x)/di.shape[0] * 100 ,1))
+df_freq = demo_df.apply(lambda x: round(sum(x)/df_freq.shape[0] * 100 ,1))
 df_freq = df_freq.drop('timestamp')
 
 ##### COPY FROM HERE ######
