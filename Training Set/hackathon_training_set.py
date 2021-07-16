@@ -118,4 +118,6 @@ df['labels'] = df['labels'].fillna(7.)
 print(pd.unique(df['labels']))
 print(df['labels'].value_counts())
 
-df.to_csv(odir + 'trainingset_labeled.csv', index = True)
+#df.to_csv(odir + 'trainingset_labeled.csv', index = True)
+df.to_csv(odir + 'trainingset_labeled_combined.csv', index = True)
+
