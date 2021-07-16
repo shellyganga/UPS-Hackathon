@@ -4,12 +4,15 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, roc_auc_score
+from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score
+
 
 from sklearn.model_selection import GridSearchCV
 
+event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
+
 ddir = 'C:/users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/Training Set/'
-di = pd.read_csv(ddir + 'rf_trainingset.csv')
+di = pd.read_csv(ddir + 'rf_trainingset_combined.csv')
 
 factor = pd.factorize(di['labels'])
 
@@ -43,7 +46,7 @@ rf = RandomForestClassifier()
 grid_search = GridSearchCV(estimator = rf, param_grid = param_grid, 
                           cv = 3, n_jobs = -1, verbose = 2)
 
-grid_search.fit(X_train, train_labels)
+grid_search.fit(X_train, y_train)
 
 classifier = RandomForestClassifier(**grid_search.best_params_)
 classifier.fit(X_train, y_train)
@@ -55,9 +58,30 @@ cm = confusion_matrix(y_test, y_pred)
 
 n_classes = len(list(pd.unique(di['labels'])))
 
-y_test_oh = np.array(pd.get_dummies(y_test))
-y_pred_oh = np.array(pd.get_dummies(y_pred))
+y_test = pd.DataFrame(y_test).replace(event_dict)
+y_pred = pd.DataFrame(y_pred).replace(event_dict)
+
+y_test_oh = pd.get_dummies(y_test, prefix = None)
+y_pred_oh = pd.get_dummies(y_pred, prefix = None)
+
+def remove_prefix(prefix):
+    return lambda x: x[len(prefix):]
+
+y_test_oh = y_test_oh.rename(remove_prefix('labels_'), axis='columns')
+y_pred_oh = y_pred_oh.rename(remove_prefix('0_'), axis='columns')
+
+col_test = list(y_test_oh.columns)
+col_pred = list(y_pred_oh.columns)
+col_not_same = [x for x in col_test if x not in col_pred]
 
 for i in range(n_classes):
-    roc_auc = roc_auc_score(y_test_oh[:, i], y_pred_oh[:, i])
-    print(i, ' : ', roc_auc)
+    col = col_test[i]
+    
+    if col not in col_not_same:
+        roc_auc = roc_auc_score(y_test_oh[col], y_pred_oh[col])
+        print(col, ' : ', roc_auc)
+
+        accuracy = accuracy_score(y_test_oh[col], y_pred_oh[col])
+        print(col, ' : ', accuracy)
+
+

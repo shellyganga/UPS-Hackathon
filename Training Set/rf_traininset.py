@@ -12,23 +12,23 @@ cols_to_use = ['accel_x','accel_y','accel_z','linaccel_x','linaccel_y','linaccel
 
 Xy = di[cols_to_use]
 
-train_rf = pd.DataFrame(columns = ['mean_x','median_x','stddev_x','mean_y','median_y','stddev_y','mean_z','median_z','stddev_z','labels'])
+train_rf = pd.DataFrame()
 for i in range(0,len(Xy),50):
     v = Xy.iloc[i:(i + 50)].values
     y = v[:,9]
     X = pd.DataFrame(np.delete(v, 9, axis = 1))
     
-    mean_acc = X[[0,1,2]].apply(lambda x: np.mean(x))
-    median_acc = X[[0,1,2]].apply(lambda x: stats.median_abs_deviation(x))
-    stddev_acc = X[[0,1,2]].apply(lambda x: np.std(x))
+    mean_acc = np.array(X[[0,1,2]].apply(lambda x: np.mean(x)))
+    median_acc =  np.array(X[[0,1,2]].apply(lambda x: stats.median_abs_deviation(x)))
+    stddev_acc =  np.array(X[[0,1,2]].apply(lambda x: np.std(x)))
     
-    mean_linacc = X[[3,4,5]].apply(lambda x: np.mean(x))
-    median_linacc = X[[3,4,5]].apply(lambda x: stats.median_abs_deviation(x))
-    stddev_linacc = X[[3,4,5]].apply(lambda x: np.std(x))
+    mean_linacc =  np.array(X[[3,4,5]].apply(lambda x: np.mean(x)))
+    median_linacc =  np.array(X[[3,4,5]].apply(lambda x: stats.median_abs_deviation(x)))
+    stddev_linacc =  np.array(X[[3,4,5]].apply(lambda x: np.std(x)))
     
-    mean_gyro = X[[6,7,8]].apply(lambda x: np.mean(x))
-    median_gyro = X[[6,7,8]].apply(lambda x: stats.median_abs_deviation(x))
-    stddev_gyro = X[[6,7,8]].apply(lambda x: np.std(x))
+    mean_gyro =  np.array(X[[6,7,8]].apply(lambda x: np.mean(x)))
+    median_gyro =  np.array(X[[6,7,8]].apply(lambda x: stats.median_abs_deviation(x)))
+    stddev_gyro =  np.array(X[[6,7,8]].apply(lambda x: np.std(x)))
     
     row = {'mean_x_acc':mean_acc[0],'median_x_acc':median_acc[0],'stddev_x_acc':stddev_acc[0],
            'mean_y_acc':mean_acc[1],'median_y_acc':median_acc[1],'stddev_y_acc':stddev_acc[1],
