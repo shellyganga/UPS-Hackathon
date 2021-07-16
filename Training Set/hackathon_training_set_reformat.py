@@ -5,7 +5,8 @@ from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.model_selection import train_test_split
 
 #from keras.preprocessing.sequence import TimeseriesGenerator
-import keras
+import tensorflow as tf
+from tensorflow import keras
 
 ddir = 'C:/users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/Training Set/'
 
@@ -26,6 +27,8 @@ ts_generator = TimeseriesGenerator(features, targets, length=1, sampling_rate = 
 print(ts_generator[0])
 '''
 
+#di = di.head(n = 20)
+
 def create_dataset(X, y, time_steps, step):
     Xs, ys = [], []
     for i in range(0, len(X) - time_steps, step):
@@ -36,8 +39,8 @@ def create_dataset(X, y, time_steps, step):
     return np.array(Xs), np.array(ys).reshape(-1, 1)
 
 # Create Dataset
-TIME_STEPS = 50
-STEP = 10
+TIME_STEPS = 10
+STEP = 5
 
 X_train, y_train = create_dataset(
     di[['x', 'y', 'z']],
@@ -62,6 +65,7 @@ y_train = enc.transform(y_train)
 y_test = enc.transform(y_test)
 
 print(X_train.shape, y_train.shape)
+
 
 # Training Model
 model = keras.Sequential()

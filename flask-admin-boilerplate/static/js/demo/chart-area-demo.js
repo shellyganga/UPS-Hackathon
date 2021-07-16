@@ -29,114 +29,244 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 // Area Chart Example
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: "line",
-  data: {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    datasets: [
-      {
-        label: "Earnings",
-        lineTension: 0.3,
-        backgroundColor: "rgba(78, 115, 223, 0.05)",
-        borderColor: "rgba(78, 115, 223, 1)",
-        pointRadius: 3,
-        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-        pointBorderColor: "rgba(78, 115, 223, 1)",
-        pointHoverRadius: 3,
-        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-        pointHitRadius: 10,
-        pointBorderWidth: 2,
-        data: [
-          0, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000,
-          10000, 10000,
-        ],
-      },
-    ],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0,
-      },
-    },
-    scales: {
-      xAxes: [
+const testing = async function () {
+  const test = await fetch("/api");
+  const response = await test.json();
+  console.log(response["timestamp"]);
+  const timestamps = [];
+  const NonAggressive = [];
+  const AggressiveRightTurn = [];
+  const AggressiveLeftTurn = [];
+  const AggressiveRightLaneChange = [];
+  const AggressiveLeftLaneChange = [];
+  const AggressiveAcceleration = [];
+  const AggressiveBraking = [];
+
+  for (const [key, value] of Object.entries(response["timestamp"])) {
+    timestamps.push(value);
+  }
+
+  for (const [key, value] of Object.entries(response["Non-aggressive Event"])) {
+    NonAggressive.push(value);
+  }
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Right Turn"]
+  )) {
+    AggressiveRightTurn.push(value);
+  }
+
+  for (const [key, value] of Object.entries(response["Aggressive Left Turn"])) {
+    AggressiveLeftTurn.push(value);
+  }
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Right Lane Change"]
+  )) {
+    AggressiveRightLaneChange.push(value);
+  }
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Left Lane Change"]
+  )) {
+    AggressiveLeftLaneChange.push(value);
+  }
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Acceleration"]
+  )) {
+    AggressiveAcceleration.push(value);
+  }
+
+  for (const [key, value] of Object.entries(response["Aggressive Braking"])) {
+    AggressiveBraking.push(value);
+  }
+
+  var ctx = document.getElementById("myAreaChart");
+  var myLineChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: timestamps,
+      datasets: [
         {
-          time: {
-            unit: "date",
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false,
-          },
-          ticks: {
-            maxTicksLimit: 7,
-          },
+          label: "Non-aggressive Event",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointBorderColor: "rgba(78, 115, 223, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: NonAggressive,
+        },
+        {
+          label: "Aggressive Right Turn",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointBorderColor: "rgba(78, 115, 223, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveRightTurn,
+        },
+        {
+          label: "Aggressive Left Turn",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveLeftTurn,
+        },
+        {
+          label: "Aggressive Right Lane Change",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveRightLaneChange,
+        },
+        {
+          label: "Aggressive Left Lane Change",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveLeftLaneChange,
+        },
+        {
+          label: "Aggressive Acceleration",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveAcceleration,
+        },
+        {
+          label: "Aggressive Braking",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveBraking,
         },
       ],
-      yAxes: [
-        {
-          ticks: {
-            maxTicksLimit: 5,
-            padding: 10,
-            // Include a dollar sign in the ticks
-            callback: function (value, index, values) {
-              return "$" + number_format(value);
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
             },
           },
-          gridLines: {
-            color: "rgb(234, 236, 244)",
-            zeroLineColor: "rgb(234, 236, 244)",
-            drawBorder: false,
-            borderDash: [2],
-            zeroLineBorderDash: [2],
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return "$" + number_format(value);
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
           },
-        },
-      ],
-    },
-    legend: {
-      display: false,
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: "#6e707e",
-      titleFontSize: 14,
-      borderColor: "#dddfeb",
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: "index",
-      caretPadding: 10,
-      callbacks: {
-        label: function (tooltipItem, chart) {
-          var datasetLabel =
-            chart.datasets[tooltipItem.datasetIndex].label || "";
-          return datasetLabel + ": $" + number_format(tooltipItem.yLabel);
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + ": $" + number_format(tooltipItem.yLabel);
+          },
         },
       },
     },
-  },
-});
+  });
+};
+
+testing();

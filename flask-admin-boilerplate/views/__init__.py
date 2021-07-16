@@ -1,66 +1,123 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import json, render_template, request, redirect, url_for, session,jsonify
 from app import app
+import numpy as np
+import pickle
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import tensorflow as tf
+from tensorflow import keras
+import pathlib
+path = pathlib.Path(__file__).parent.resolve()
 
+
+di = pd.read_csv(path/'test_fordemo.csv')
+csv_read = pd.read_csv(path/'demo_df_artificial.csv')
+model = keras.models.load_model(path/"my_model_fordemo")
+
+event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
+event_list = ['Non-aggressive Event','Aggressive Right Turn','Aggressive Left Turn','Aggressive Right Lane Change','Aggressive Left Lane Change','Aggressive Acceleration','Aggressive Braking']
+
+def demo_data(X, time_steps, step, model):
+    XX = X[['x','y','z']]
+
+    Xs = []
+    for i in range(0, len(XX) - time_steps, step):
+        v = XX.iloc[i:(i + time_steps)].values
+        Xs.append(v)
+    Xs = np.array(Xs)
+
+    prediction = model.predict_classes(Xs)
+
+    t_inseconds = time_steps * (1/50)
+
+    timestamps = np.arange(0,t_inseconds*prediction.shape[0],t_inseconds)
+
+    prediction_oh = pd.get_dummies(prediction)
+    prediction_oh = prediction_oh.rename(columns = event_dict)
+
+    demo_df = pd.DataFrame(np.nan, index = [i for i in range(0,prediction.shape[0])], columns = event_list)
+    print(demo_df)
+
+    for c in prediction_oh.columns:
+        demo_df[c] = prediction_oh[c]
+
+    demo_df = demo_df.fillna(0)
+
+    demo_df['timestamp'] = timestamps
+
+    return demo_df
+
+# Create Dataset #Later will change
+TIME_STEPS = 10
+STEP = 5
+
+demo_df  = demo_data(
+    di[['x', 'y', 'z']],
+    TIME_STEPS,
+    STEP,
+    model
+)
+jsonOb = demo_df.to_json(path_or_buf=None, orient=None, 
+date_format=None, double_precision=10, 
+force_ascii=True, 
+date_unit='ms', 
+default_handler=None, lines=False, 
+compression='infer', index=True)
+
+
+jsonOb1 = csv_read.to_json(path_or_buf=None, orient=None, 
+date_format=None, double_precision=10, 
+force_ascii=True, 
+date_unit='ms', 
+default_handler=None, lines=False, 
+compression='infer', index=True)
+
+
+print(jsonOb)
 @app.route('/', methods=["GET"])
 def home():
+
+#Load Pickled Model
+
+#     model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
+
+# # Evaluation
+#     y_pred = model.predict(X_test)
+#     test = pd.unique(y_pred)
     return render_template('index.html')
-    # if "username" in session:
-    #     return render_template('index.html')
-    # else:
-    #     return render_template('login.html')
 
 @app.route('/driver_2', methods=["GET"])
 def driver_2():
+
+#     model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
+
+# # Evaluation
+#     y_pred = model.predict(X_test)
+#     test = pd.unique(y_pred)
     return render_template('driver_2.html')
-    # if "username" in session:
-    #     return render_template('index.html')
-    # else:
-    #     return render_template('login.html')
 
+@app.route('/api', methods=["GET", "POST"])
+def api():
+#     model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
+# # Evaluation
+#     y_pred = model.predict(X_test)
+#     test = pd.unique(y_pred)
+#     message = {'info': int(test[0])}
+    return jsonOb1
 
-# Register new user
-# @app.route('/register', methods=["GET", "POST"])
-# def register():
-#     if request.method == "GET":
-#         return render_template("register.html")
-#     elif request.method == "POST":
-#         registerUser()
-#         return redirect(url_for("login"))
+@app.route('/freqapi',methods=["GET","POST"])
+def freqapi():
+    df_freq = demo_df.apply(lambda x: round(sum(x)/di.shape[0] * 100 ,1))
+    df_freq = df_freq.drop('timestamp')
 
-#Check if email already exists in the registratiion page
-# @app.route('/checkusername', methods=["POST"])
-# def check():
-#     return checkusername()
-
-# Everything Login (Routes to renderpage, check if username exist and also verifypassword through Jquery AJAX request)
-# @app.route('/login', methods=["GET"])
-# def login():
-#     if request.method == "GET":
-#         if "username" not in session:
-#             return render_template("login.html")
-#         else:
-#             return redirect(url_for("home"))
-
-
-# @app.route('/checkloginusername', methods=["POST"])
-# def checkUserlogin():
-#     return checkloginusername()
-
-# @app.route('/checkloginpassword', methods=["POST"])
-# def checkUserpassword():
-#     return checkloginpassword()
-
-#The admin logout
-# @app.route('/logout', methods=["GET"])  # URL for logout
-# def logout():  # logout function
-#     session.pop('username', None)  # remove user session
-#     return redirect(url_for("home"))  # redirect to home page with message
-
-#Forgot Password
-# @app.route('/forgot-password', methods=["GET"])
-# def forgotpassword():
-#     return render_template('forgot-password.html')
+    jsonFreqOb = df_freq.to_json(path_or_buf=None, orient=None, 
+        date_format=None, double_precision=10, 
+        force_ascii=True, 
+        date_unit='ms', 
+        default_handler=None, lines=False, 
+        compression='infer', index=True)
+    return jsonFreqOb
 
 #404 Page
 @app.route('/404', methods=["GET"])
