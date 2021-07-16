@@ -1,8 +1,9 @@
-import numpy as np
-import pandas as pd
+##### COPY FROM HERE ######
 
+import numpy as np
 import tensorflow as tf
 from tensorflow import keras
+import pandas as pd
 
 di = pd.read_csv('C:/Users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/For Demo/test_fordemo.csv')
 model = keras.models.load_model("/Users/spwiz/Documents/GitHub/UPS-Hackathon-Resources/For Demo/my_model_fordemo")
@@ -44,6 +45,23 @@ def demo_data(X, time_steps, step, model):
 TIME_STEPS = 10
 STEP = 5
 
+'''
+drivers = list(pd.unique(di['driver']))
+
+for d in drivers:
+    disub = di[di['driver'] == d]
+
+    demo_df  = demo_data(
+        di[['x', 'y', 'z']],
+        TIME_STEPS,
+        STEP,
+        model
+    )
+
+    df_freq = demo_df.apply(lambda x: round(sum(x)/di.shape[0] * 100 ,1))
+    df_freq = df_freq.drop('timestamp')
+'''
+
 demo_df  = demo_data(
     di[['x', 'y', 'z']],
     TIME_STEPS,
@@ -51,4 +69,11 @@ demo_df  = demo_data(
     model
 )
 
+df_freq = demo_df.apply(lambda x: round(sum(x)/di.shape[0] * 100 ,1))
+df_freq = df_freq.drop('timestamp')
+
+##### COPY FROM HERE ######
+
+
 print(demo_df)
+demo_df.to_csv('C:/Users/spwiz/Downloads/demo_df.csv', index = True)
