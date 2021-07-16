@@ -106,6 +106,18 @@ def api():
 #     message = {'info': int(test[0])}
     return jsonOb1
 
+@app.route('/freqapi',methods=["GET","POST"])
+def freqapi():
+    df_freq = demo_df.apply(lambda x: round(sum(x)/di.shape[0] * 100 ,1))
+    df_freq = df_freq.drop('timestamp')
+
+    jsonFreqOb = df_freq.to_json(path_or_buf=None, orient=None, 
+        date_format=None, double_precision=10, 
+        force_ascii=True, 
+        date_unit='ms', 
+        default_handler=None, lines=False, 
+        compression='infer', index=True)
+    return jsonFreqOb
 
 #404 Page
 @app.route('/404', methods=["GET"])
