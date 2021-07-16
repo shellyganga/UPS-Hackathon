@@ -41,12 +41,26 @@ def demo_data(X, time_steps, step, model):
 
     return demo_df
 
-def frequency(df):
-
-
 # Create Dataset
 TIME_STEPS = 10
 STEP = 5
+
+'''
+drivers = list(pd.unique(di['driver']))
+
+for d in drivers:
+    disub = di[di['driver'] == d]
+
+    demo_df  = demo_data(
+        di[['x', 'y', 'z']],
+        TIME_STEPS,
+        STEP,
+        model
+    )
+
+    df_freq = demo_df.apply(lambda x: round(sum(x)/di.shape[0] * 100 ,1))
+    df_freq = df_freq.drop('timestamp')
+'''
 
 demo_df  = demo_data(
     di[['x', 'y', 'z']],
