@@ -1,5 +1,5 @@
 from flask import json, render_template, request, redirect, url_for, session,jsonify
-from app import app
+from main import app
 import numpy as np
 import pickle
 import pandas as pd
