@@ -2,8 +2,9 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import RobustScaler
 
-df = pd.read_csv("https://raw.githubusercontent.com/shellyganga/UPS-Hackathon-Resources/main/Training%20Set/trainingset_labeled.csv?token=AHT6SSFMJUJ73WF6PSCLIQ3A7B6BG")
+df = pd.read_csv("https://raw.githubusercontent.com/shellyganga/UPS-Hackathon-Resources/main/Training%20Set/trainingset_labeled_combined.csv?token=AHT6SSHZ7IPKYTZ5UYWDWRDA7IVKE")
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -13,17 +14,19 @@ import tensorflow as tf
 #from keras.preprocessing.sequence import TimeseriesGenerator
 import keras
 
-di = pd.read_csv('https://raw.githubusercontent.com/shellyganga/UPS-Hackathon-Resources/main/Training%20Set/trainingset_labeled.csv?token=AHT6SSDYAEP53ZDJSWO467DA7CWLE')
+di = pd.read_csv('https://raw.githubusercontent.com/shellyganga/UPS-Hackathon-Resources/main/Training%20Set/trainingset_labeled_combined.csv?token=AHT6SSHZ7IPKYTZ5UYWDWRDA7IVKE')
+print(di.head())
 di = di[di['labels'] != 7]
-# di = di[di['labels'] != 3]
-# di = di[di['labels'] != 4]
+#di = di[di['labels'] != 3]
+#di = di[di['labels'] != 4]
+
 #di['uptimemilli_diff'] = (di['uptimeNanos'] - np.full((di.shape[0],),di['uptimeNanos'].min()))*1e-6
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 train, test = train_test_split(di, test_size=0.2, random_state=42, shuffle=True)
-print(train.labels.to_list())
+#print(train.labels.to_list())
 # sns.countplot(x = 'labels',
 #               data = train,
 #               order = df.labels.value_counts().index);
@@ -32,7 +35,7 @@ print(train.labels.to_list())
 #               data = test,
 #               order = df.labels.value_counts().index);
 # plt.show()
-di['labels'] = di['labels'].fillna(7.)
+#di['labels'] = di['labels'].fillna(7.)
 
 '''
 # One-Hot Encoding
@@ -46,6 +49,16 @@ ts_generator = TimeseriesGenerator(features, targets, length=1, sampling_rate = 
 print(ts_generator[0])
 '''
 
+# scale_columns = ['x', 'y', 'z']
+# scaler = RobustScaler()
+# scaler = scaler.fit(train[scale_columns])
+
+# train.loc[:, scale_columns] = scaler.transform(train[scale_columns].to_numpy())
+# test.loc[:, scale_columns] = scaler.transform(test[scale_columns].to_numpy())
+
+#train_cols = ['accel_x','accel_y','accel_z','linaccel_x','linaccel_y','linaccel_z','gyro_x','gyro_y','gyro_z']
+cols = ['accel_x','accel_y','accel_z','linaccel_x','linaccel_y','linaccel_z','gyro_x','gyro_y','gyro_z']
+
 def create_dataset(X, y, time_steps, step):
     Xs, ys = [], []
     for i in range(0, len(X) - time_steps, step):
@@ -56,18 +69,20 @@ def create_dataset(X, y, time_steps, step):
     return np.array(Xs), np.array(ys).reshape(-1, 1)
 
 # Create Dataset
+# time_steps --- the number of rows in each slidding window
+# step -- duration of the slidding window
 TIME_STEPS = 200
 STEP = 5
 
 X_train, y_train = create_dataset(
-    train[['x', 'y', 'z']],
+    train[cols],
     train.labels,
     TIME_STEPS,
     STEP
 )
 
 X_test, y_test = create_dataset(
-    test[['x', 'y', 'z']],
+    test[cols],
     test.labels,
     TIME_STEPS,
     STEP
@@ -82,19 +97,19 @@ y_train = enc.transform(y_train)
 y_test = enc.transform(y_test)
 
 print(X_train.shape, y_train.shape)
-print(X_test)
+
 # Training Model
 model = keras.Sequential()
 model.add(
     keras.layers.Bidirectional(
       keras.layers.LSTM(
-          units=32,
+          units=128,
           input_shape=[X_train.shape[1], X_train.shape[2]]
       )
     )
 )
 model.add(keras.layers.Dropout(rate=0.5))
-model.add(keras.layers.Dense(units=32, activation='relu'))
+model.add(keras.layers.Dense(units=128, activation='relu'))
 model.add(keras.layers.Dense(y_train.shape[1], activation='softmax'))
 
 model.compile(
@@ -106,10 +121,12 @@ model.compile(
 history = model.fit(
     X_train, y_train,
     epochs=1000,
-    batch_size=16,
+    batch_size=32,
     validation_split=0.2,
     shuffle=False
 )
+
+#print(model.evaluate(X_test, y_test))
 y_pred = model.predict(X_test)
 #print(y_pred)
 
@@ -135,16 +152,7 @@ import numpy as np
 
 print(classification_report(y_test, y_pred))
 
-# model.evaluate(X_test, y_test)
-# y_pred = model.predict(X_test)
-# from sklearn.metrics import confusion_matrix
-# y_pred=np.argmax(y_pred, axis=1)
-# y_test=np.argmax(y_test, axis=1)
-# confusion_matrix(y_test, y_pred, labels=[0,1,2,5,6])
-# print(confusion_matrix)
-# import seaborn as sns
-#
-# import matplotlib.pyplot as plt
+
 # def plot_cm(y_true, y_pred, class_names):
 #   cm = confusion_matrix(y_true, y_pred)
 #   fig, ax = plt.subplots(figsize=(18, 16))
@@ -166,34 +174,9 @@ print(classification_report(y_test, y_pred))
 #   plt.ylim(b, t) # update the ylim(bottom, top) values
 #   plt.show() # ta-da!
 # plot_cm(
-#
-#   np.argmax(y_pred, axis=1),
-#   np.argmax(y_test, axis=1),
+#   enc.inverse_transform(y_test),
+#   enc.inverse_transform(y_pred),
 #   enc.categories_[0]
 # )
-# print(enc.categories_[0])
-model.save('/Users/shellyschwartz/PycharmProjects/upsHackathon/UPS-Hackathon-Resources/Aggressive_Driving/my_model5')
-# df = pd.read_csv('https://raw.githubusercontent.com/jair-jr/driverBehaviorDataset/master/data/16/acelerometro_terra.csv')
-# print(df.head())
-# df = df[21:]
-# new_df = df.groupby('timestamp')
-#
-# thing = df["timestamp"].get_group('14/05/2016 10:54:34')
-# print(len(thing))
-# arr = df['timestamp'].unique()
-# print(arr)
-# for elem in arr:
-#     new_df = df.loc[df['timestamp'] == elem]
-#     print(len(new_df))
-#     if(len(new_df)!=50):
-#         print(elem)
-# print(df['timestamp'].tolist())
-# df = df[df['timestamp'] == "14/05/2016 10:54:33"]
-#print(new_df)
-# df["timestamp"] = pd.to_datetime(df["timestamp"])
-# arr = df["timestamp"].unique()
-# print(arr[0])
-# print(arr)
-# for elem in arr:
-#     new_df = df.groupby(by=[elem])
-#     print(len(new_df))
+
+# tf.keras.models.save_model('/Users/shellyschwartz/PycharmProjects/upsHackathon/UPS-Hackathon-Resources/Aggressive_Driving/my_model2')
