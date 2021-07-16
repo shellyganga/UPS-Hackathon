@@ -25,7 +25,7 @@ def demo_data(X, time_steps, step, model):
         Xs.append(v)
     Xs = np.array(Xs)
 
-    prediction = model.predict(Xs)
+    prediction = model.predict_classes(Xs)
 
     t_inseconds = time_steps * (1/50)
 
@@ -58,40 +58,47 @@ demo_df  = demo_data(
 )
 
 print(demo_df)
+jsonOb = demo_df.to_json(path_or_buf=None, orient=None, 
+date_format=None, double_precision=10, 
+force_ascii=True, 
+date_unit='ms', 
+default_handler=None, lines=False, 
+compression='infer', index=True)
 
+print(jsonOb)
 @app.route('/', methods=["GET"])
 def home():
 
 #Load Pickled Model
 
-    model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
+#     model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
-# Evaluation
-    y_pred = model.predict(X_test)
-    test = pd.unique(y_pred)
+# # Evaluation
+#     y_pred = model.predict(X_test)
+#     test = pd.unique(y_pred)
     return render_template('index.html')
 
 @app.route('/driver_2', methods=["GET"])
 def driver_2():
 
-    model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
+#     model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
-# Evaluation
-    y_pred = model.predict(X_test)
-    test = pd.unique(y_pred)
+# # Evaluation
+#     y_pred = model.predict(X_test)
+#     test = pd.unique(y_pred)
     return render_template('driver_2.html')
 
 @app.route('/api', methods=["GET", "POST"])
 def api():
 
 
-    model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
+#     model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
-# Evaluation
-    y_pred = model.predict(X_test)
-    test = pd.unique(y_pred)
-    message = {'info': int(test[0])}
-    return jsonify(message)
+# # Evaluation
+#     y_pred = model.predict(X_test)
+#     test = pd.unique(y_pred)
+#     message = {'info': int(test[0])}
+    return jsonOb
 
 
 #404 Page

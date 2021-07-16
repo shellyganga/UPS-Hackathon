@@ -34,12 +34,16 @@ const testing = async function () {
   const response = await test.json();
   const arr = [];
   const arr2 = [];
-  for (let i = 1; i <= 1000; i++) {
+  const arr3 = [];
+  for (let i = 1; i <= 10; i++) {
     arr.push(i);
   }
 
-  for (let i = 1; i <= 1000; i++) {
+  for (let i = 1; i <= 10; i++) {
     arr2.push(Math.random());
+  }
+  for (let i = 1; i <= 10; i++) {
+    arr3.push(Math.random());
   }
 
   var ctx = document.getElementById("myAreaChart");
@@ -62,6 +66,21 @@ const testing = async function () {
           pointHitRadius: 10,
           pointBorderWidth: 2,
           data: arr2,
+        },
+        {
+          label: "Hackathon",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: arr3,
         },
       ],
     },
