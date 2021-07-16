@@ -11,6 +11,7 @@ path = pathlib.Path(__file__).parent.resolve()
 
 
 di = pd.read_csv(path/'test_fordemo.csv')
+csv_read = pd.read_csv(path/'demo_df_artificial.csv')
 model = keras.models.load_model(path/"my_model_fordemo")
 
 event_dict = {0:'Non-aggressive Event',1:'Aggressive Right Turn',2:'Aggressive Left Turn',3:'Aggressive Right Lane Change',4:'Aggressive Left Lane Change',5:'Aggressive Acceleration',6:'Aggressive Braking'}
@@ -56,14 +57,21 @@ demo_df  = demo_data(
     STEP,
     model
 )
-
-print(demo_df)
 jsonOb = demo_df.to_json(path_or_buf=None, orient=None, 
 date_format=None, double_precision=10, 
 force_ascii=True, 
 date_unit='ms', 
 default_handler=None, lines=False, 
 compression='infer', index=True)
+
+
+jsonOb1 = csv_read.to_json(path_or_buf=None, orient=None, 
+date_format=None, double_precision=10, 
+force_ascii=True, 
+date_unit='ms', 
+default_handler=None, lines=False, 
+compression='infer', index=True)
+
 
 print(jsonOb)
 @app.route('/', methods=["GET"])
@@ -90,15 +98,13 @@ def driver_2():
 
 @app.route('/api', methods=["GET", "POST"])
 def api():
-
-
 #     model = pickle.load(open(path/'thepickledmodel.pkl','rb'))
 
 # # Evaluation
 #     y_pred = model.predict(X_test)
 #     test = pd.unique(y_pred)
 #     message = {'info': int(test[0])}
-    return jsonOb
+    return jsonOb1
 
 
 #404 Page

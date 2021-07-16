@@ -32,28 +32,64 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 const testing = async function () {
   const test = await fetch("/api");
   const response = await test.json();
-  const arr = [];
-  const arr2 = [];
-  const arr3 = [];
-  for (let i = 1; i <= 10; i++) {
-    arr.push(i);
+  console.log(response["timestamp"]);
+  const timestamps = [];
+  const NonAggressive = [];
+  const AggressiveRightTurn = [];
+  const AggressiveLeftTurn = [];
+  const AggressiveRightLaneChange = [];
+  const AggressiveLeftLaneChange = [];
+  const AggressiveAcceleration = [];
+  const AggressiveBraking = [];
+
+  for (const [key, value] of Object.entries(response["timestamp"])) {
+    timestamps.push(value);
   }
 
-  for (let i = 1; i <= 10; i++) {
-    arr2.push(Math.random());
+  for (const [key, value] of Object.entries(response["Non-aggressive Event"])) {
+    NonAggressive.push(value);
   }
-  for (let i = 1; i <= 10; i++) {
-    arr3.push(Math.random());
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Right Turn"]
+  )) {
+    AggressiveRightTurn.push(value);
+  }
+
+  for (const [key, value] of Object.entries(response["Aggressive Left Turn"])) {
+    AggressiveLeftTurn.push(value);
+  }
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Right Lane Change"]
+  )) {
+    AggressiveRightLaneChange.push(value);
+  }
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Left Lane Change"]
+  )) {
+    AggressiveLeftLaneChange.push(value);
+  }
+
+  for (const [key, value] of Object.entries(
+    response["Aggressive Acceleration"]
+  )) {
+    AggressiveAcceleration.push(value);
+  }
+
+  for (const [key, value] of Object.entries(response["Aggressive Braking"])) {
+    AggressiveBraking.push(value);
   }
 
   var ctx = document.getElementById("myAreaChart");
   var myLineChart = new Chart(ctx, {
     type: "line",
     data: {
-      labels: arr,
+      labels: timestamps,
       datasets: [
         {
-          label: "Earnings",
+          label: "Non-aggressive Event",
           lineTension: 0.3,
           backgroundColor: "rgba(78, 115, 223, 0.05)",
           borderColor: "rgba(78, 115, 223, 1)",
@@ -65,10 +101,25 @@ const testing = async function () {
           pointHoverBorderColor: "rgba(78, 115, 223, 1)",
           pointHitRadius: 10,
           pointBorderWidth: 2,
-          data: arr2,
+          data: NonAggressive,
         },
         {
-          label: "Hackathon",
+          label: "Aggressive Right Turn",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointBorderColor: "rgba(78, 115, 223, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveRightTurn,
+        },
+        {
+          label: "Aggressive Left Turn",
           lineTension: 0.3,
           backgroundColor: "rgba(78, 115, 223, 0.05)",
           borderColor: "rgba(255, 99, 71, 1)",
@@ -80,7 +131,67 @@ const testing = async function () {
           pointHoverBorderColor: "rgba(255, 99, 71, 1)",
           pointHitRadius: 10,
           pointBorderWidth: 2,
-          data: arr3,
+          data: AggressiveLeftTurn,
+        },
+        {
+          label: "Aggressive Right Lane Change",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveRightLaneChange,
+        },
+        {
+          label: "Aggressive Left Lane Change",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveLeftLaneChange,
+        },
+        {
+          label: "Aggressive Acceleration",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveAcceleration,
+        },
+        {
+          label: "Aggressive Braking",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(255, 99, 71, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointBorderColor: "rgba(255, 99, 71, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(255, 99, 71, 1)",
+          pointHoverBorderColor: "rgba(255, 99, 71, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: AggressiveBraking,
         },
       ],
     },
